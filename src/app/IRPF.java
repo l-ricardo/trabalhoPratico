@@ -4,6 +4,15 @@ public class IRPF {
 
 	public static final boolean TRIBUTAVEL = true;
 	public static final boolean NAOTRIBUTAVEL = false;
+
+	private static final float FAIXA1_LIMITE = 2259.20f;
+	private static final float FAIXA2_LIMITE = 2826.65f;
+	private static final float FAIXA3_LIMITE = 3751.05f;
+	private static final float FAIXA4_LIMITE = 4664.68f;
+	private static final float FAIXA2_BASE = 170.28f;
+	private static final float FAIXA3_BASE = 593.94f;
+	private static final float FAIXA4_BASE = 1071.44f;
+
 	private String[] nomeRendimento;
 	private boolean[] rendimentoTributavel;
 	private float[] valorRendimento;
@@ -289,6 +298,42 @@ public class IRPF {
 		}
 		return soma;
 	}
-	
-	
+
+	/**
+	 * Obtem o valor total de todas as deduções que nao sao do tipo
+	 * contribuicoes previdenciarias ou por dependentes
+	 * @return valor total das outras deducoes
+	 */
+    public float getBaseCalculoImposto() {
+        float soma = 0;
+        for (float f : valorRendimento) {
+            soma += f;
+        }
+        soma -= getDeducao();
+        return soma;
+    }
+
+    /**
+     * Calcula o imposto com base na base de cálculo.
+     * @return valor do imposto calculado
+     */
+	public float calcularImposto() {
+		float baseCalculo = getBaseCalculoImposto();
+		float imposto = 0;
+
+		if (baseCalculo <= FAIXA1_LIMITE) {
+			imposto = 0;
+		} else if (baseCalculo <= FAIXA2_LIMITE) {
+			imposto = (baseCalculo - FAIXA1_LIMITE) * 0.075f;
+		} else if (baseCalculo <= FAIXA3_LIMITE) {
+			imposto = (baseCalculo - FAIXA2_LIMITE) * 0.15f + FAIXA2_BASE;
+		} else if (baseCalculo <= FAIXA4_LIMITE) {
+			imposto = (baseCalculo - FAIXA3_LIMITE) * 0.225f + FAIXA3_BASE;
+		} else {
+			imposto = (baseCalculo - FAIXA4_LIMITE) * 0.275f + FAIXA4_BASE;
+		}
+
+		return imposto;
+	}
+
 }
