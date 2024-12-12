@@ -226,8 +226,6 @@ public class IRPF {
 	public float getTotalPensaoAlimenticia() {
 		return totalPensaoAlimenticia;
 	}
-
-	
 	/**
 	 * Metodo para cadastrar deduções integrais para o contribuinte. Para cada
 	 * dedução é informado seu nome e valor. 
@@ -279,8 +277,8 @@ public class IRPF {
 
 	/**
 	 * Obtem o valor total de todas as deduções que nao sao do tipo
-	 * contribuicoes previdenciarias ou por dependentes
-	 * @return valor total das outras deducoes
+	 * contribuições previdenciárias ou por dependentes
+	 * @return valor total das outras deduções
 	 */
 	public float getTotalOutrasDeducoes() {
 		float soma = 0;
@@ -289,6 +287,24 @@ public class IRPF {
 		}
 		return soma;
 	}
-	
-	
+
+	/**
+   * Obtem o valor base para cálculo do imposto a partir dos rendimentos tributáveis e deduções
+   * @return valor da base de cálculo para o Imposto, baseado
+   * na diferença do total di Rendimento Tributável com o total das Deduções
+   */
+	public float getBaseCalculoImposto() {
+
+        float totalTributavel = getTotalRendimentosTributaveis();
+
+        float totalDeducoes = getDeducao() + getTotalPensaoAlimenticia() + getTotalOutrasDeducoes();
+
+		System.out.println("Deduções dependentes: " + getDeducao());
+		System.out.println("Pensão Alimentícia: " + getTotalPensaoAlimenticia());
+		System.out.println("Outras Deduções: " + getTotalOutrasDeducoes());
+        System.out.println("Total Tributável: " + totalTributavel);
+        System.out.println("Total Deduções: " + totalDeducoes);
+
+        return totalTributavel - totalDeducoes;
+	}
 }
