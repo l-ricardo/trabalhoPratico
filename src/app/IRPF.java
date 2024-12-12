@@ -289,6 +289,9 @@ public class IRPF {
 		}
 		return soma;
 	}
-	
+
+	public float getAliquotaEfetiva() {
+		return (calcularImposto() / getTotalRendimentosTributaveis()) * 100;
+	}
 	
 }
