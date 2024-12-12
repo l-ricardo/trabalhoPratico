@@ -44,7 +44,13 @@ public class TesteCalculoImposto {
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            {8000f, 2000f, 1500f, 500f, 1000f, 1500f, 2761.51f}
+            {0f, 0f, 0f, 0f, 0f, 0f, 0.0f},
+            {8000f, 2000f, 1500f, 500f, 1000f, 1500f, 987.88f},
+            {0f, 0f, 1500f, 500f, 1000f, 1500f, 0.0f},
+            {8000f, 2000f, 0f, 500f, 1000f, 1500f, 987.88f},
+            {8000f, 2000f, 1500f, 0f, 1000f, 1500f, 1125.38f},
+            {8000f, 2000f, 1500f, 500f, 0f, 1500f, 1262.88f},
+            {8000f, 2000f, 1500f, 500f, 1000f, 0f, 1400.38f}
         });
     }
 
@@ -56,10 +62,10 @@ public class TesteCalculoImposto {
         irpf.criarRendimento("Bolsa de estudos", IRPF.NAOTRIBUTAVEL, bolsa);
 
         // Deduções
-        irpf.cadastrarDependente("Filho", "Filho");
+        irpf.cadastrarDependente("João", "Filho");
         irpf.cadastrarContribuicaoPrevidenciaria(contribuicaoPrevidenciaria);
         irpf.cadastrarDeducaoIntegral("Previdência Privada", deducaoPrevidenciaPrivada);
-        irpf.cadastrarPensaoAlimenticia("Filho", pensaoAlimenticia);
+        irpf.cadastrarPensaoAlimenticia("João", pensaoAlimenticia);
 
         // Calculo do imposto
         assertEquals(impostoEsperado, irpf.calcularImposto(), 0.01f);
