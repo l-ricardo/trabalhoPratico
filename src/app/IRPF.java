@@ -237,8 +237,6 @@ public class IRPF {
 	public float getTotalPensaoAlimenticia() {
 		return totalPensaoAlimenticia;
 	}
-
-	
 	/**
 	 * Metodo para cadastrar deduções integrais para o contribuinte. Para cada
 	 * dedução é informado seu nome e valor. 
@@ -290,8 +288,8 @@ public class IRPF {
 
 	/**
 	 * Obtem o valor total de todas as deduções que nao sao do tipo
-	 * contribuicoes previdenciarias ou por dependentes
-	 * @return valor total das outras deducoes
+	 * contribuições previdenciárias ou por dependentes
+	 * @return valor total das outras deduções
 	 */
 	public float getTotalOutrasDeducoes() {
 		float soma = 0;
@@ -347,5 +345,4 @@ public class IRPF {
         imposto += getImpostoPorFaixa(baseCalculo, LIMITE_FAIXA4, Float.MAX_VALUE, ALIQUOTA_FAIXA5);
         return (float) (Math.floor(imposto * 100.0) / 100.0);
     }
-
 }
