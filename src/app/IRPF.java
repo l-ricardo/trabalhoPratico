@@ -5,16 +5,6 @@ public class IRPF {
 	public static final boolean TRIBUTAVEL = true;
 	public static final boolean NAOTRIBUTAVEL = false;
 
-	private static final float LIMITE_FAIXA1 = 2112.01f;
-	private static final float LIMITE_FAIXA2 = 2826.65f;
-	private static final float LIMITE_FAIXA3 = 3751.05f;
-	private static final float LIMITE_FAIXA4 = 4664.68f;
-
-	private static final float ALIQUOTA_FAIXA2 = 0.075f;
-	private static final float ALIQUOTA_FAIXA3 = 0.15f;
-	private static final float ALIQUOTA_FAIXA4 = 0.225f;
-	private static final float ALIQUOTA_FAIXA5 = 0.275f;
-
 	private String[] nomeRendimento;
 	private boolean[] rendimentoTributavel;
 	private float[] valorRendimento;
