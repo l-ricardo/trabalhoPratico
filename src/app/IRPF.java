@@ -14,6 +14,9 @@ public class IRPF {
 	private String[] nomesDependentes;
 	private String[] parentescosDependentes;
 	private int numDependentes;
+
+	private final Rendimentos rendimentos = new Rendimentos();
+	private final Dependentes dependentes = new Dependentes(this);
 	
 	private int numContribuicaoPrevidenciaria;
 	private float totalContribuicaoPrevidenciaria;
@@ -24,13 +27,13 @@ public class IRPF {
 	private float[] valoresDeducoes;
 
 	public IRPF() {
-		nomeRendimento = new String[0];
-		rendimentoTributavel = new boolean[0];
-		valorRendimento = new float[0];
-		
-		nomesDependentes = new String[0];
-		parentescosDependentes = new String[0];
-		numDependentes = 0;
+        rendimentos.nomeRendimento = new String[0];
+        rendimentos.rendimentoTributavel = new boolean[0];
+        rendimentos.valorRendimento = new float[0];
+
+		dependentes.nomesDependentes = new String[0];
+		dependentes.parentescosDependentes = new String[0];
+		dependentes.numDependentes = 0;
 		
 		numContribuicaoPrevidenciaria = 0; 
 		totalContribuicaoPrevidenciaria = 0f;
@@ -40,70 +43,45 @@ public class IRPF {
 		nomesDeducoes = new String[0];
 		valoresDeducoes = new float[0];
 	}
-	
+
 	/**
-	 * Cadastra um rendimento na base do contribuinte, informando o nome do 
-	 * rendimento, seu valor e se ele é tributável ou não. 
-	 * @param nome nome do rendimento a ser cadastrado
+	 * Cadastra um rendimento na base do contribuinte, informando o nome do
+	 * rendimento, seu valor e se ele é tributável ou não.
+	 *
+	 * @param nome       nome do rendimento a ser cadastrado
 	 * @param tributavel true caso seja tributável, false caso contrário
-	 * @param valor valor do rendimento a ser cadastrado
+	 * @param valor      valor do rendimento a ser cadastrado
 	 */
 	public void criarRendimento(String nome, boolean tributavel, float valor) {
-		//Adicionar o nome do novo rendimento
-		String[] temp = new String[nomeRendimento.length + 1];
-		for (int i=0; i<nomeRendimento.length; i++)
-			temp[i] = nomeRendimento[i];
-		temp[nomeRendimento.length] = nome;
-		nomeRendimento = temp;
-
-		//adicionar tributavel ou nao no vetor 
-		boolean[] temp2 = new boolean[rendimentoTributavel.length + 1];
-		for (int i=0; i<rendimentoTributavel.length; i++) 
-			temp2[i] = rendimentoTributavel[i];
-		temp2[rendimentoTributavel.length] = tributavel;
-		rendimentoTributavel = temp2;
-		
-		//adicionar valor rendimento ao vetor
-		float[] temp3 = new float[valorRendimento.length + 1];
-		for (int i=0; i<valorRendimento.length; i++) {
-			temp3[i] = valorRendimento[i];
-		}
-		temp3[valorRendimento.length] = valor; 
-		valorRendimento = temp3;
-		
-		this.numRendimentos += 1;
-		this.totalRendimentos += valor;
-		
+		rendimentos.criarRendimento(nome, tributavel, valor);
 	}
 
 	/**
 	 * Retorna o número de rendimentos já cadastrados para o contribuinte
+	 *
 	 * @return numero de rendimentos
 	 */
 	public int getNumRendimentos() {
-		return numRendimentos;
+		return rendimentos.numRendimentos;
 	}
 
 	/**
 	 * Retorna o valor total de rendimentos cadastrados para o contribuinte
+	 *
 	 * @return valor total dos rendimentos
 	 */
 	public float getTotalRendimentos() {
-		return totalRendimentos;
+		return rendimentos.totalRendimentos;
 	}
 
 	/**
 	 * Retorna o valor total de rendimentos tributáveis do contribuinte
+	 *
 	 * @return valor total dos rendimentos tributáveis
 	 */
 	public float getTotalRendimentosTributaveis() {
-		float totalRendimentosTributaveis = 0;
-		for (int i=0; i<rendimentoTributavel.length; i++) {
-			if (rendimentoTributavel[i]) {
-				totalRendimentosTributaveis += valorRendimento[i];
-			}
-		}
-		return totalRendimentosTributaveis;
+
+		return rendimentos.getTotalRendimentosTributaveis();
 	}
 
 	/**
@@ -113,22 +91,8 @@ public class IRPF {
 	 * @param parentesco Grau de parentesco
 	 */
 	public void cadastrarDependente(String nome, String parentesco) {
-		// adicionar dependente 
-		String[] temp = new String[nomesDependentes.length + 1];
-		for (int i=0; i<nomesDependentes.length; i++) {
-			temp[i] = nomesDependentes[i];
-		}
-		temp[nomesDependentes.length] = nome;
-		nomesDependentes = temp;
-		
-		String[] temp2 = new String[parentescosDependentes.length + 1];
-		for (int i=0; i<parentescosDependentes.length; i++) {
-			temp2[i] = parentescosDependentes[i];
-		}
-		temp2[parentescosDependentes.length] = parentesco;
-		parentescosDependentes = temp2;
-		
-		numDependentes++;
+		// adicionar dependente
+		dependentes.cadastrarDependente(nome, parentesco);
 	}
 
 	/**
@@ -136,7 +100,7 @@ public class IRPF {
 	 * @return numero de dependentes
 	 */
 	public int getNumDependentes() {
-		return numDependentes;
+		return dependentes.getNumDependentes();
 	}
 	
 	/**
@@ -145,7 +109,7 @@ public class IRPF {
 	 */
 	public float getDeducao() {
 		float total = 0; 
-		for (String d: nomesDependentes) {
+		for (String d: dependentes.nomesDependentes) {
 			total += 189.59f;
 		}
 		total += totalContribuicaoPrevidenciaria;
@@ -185,11 +149,7 @@ public class IRPF {
 	 * @return nome do dependente ou null, caso nao conste na lista de dependentes
 	 */
 	public String getDependente(String nome) {
-		for (String d : nomesDependentes) {
-			if (d.contains(nome))
-				return d;
-		}
-		return null;
+		return dependentes.getDependente(nome);
 	}
 
 	/**
@@ -199,9 +159,9 @@ public class IRPF {
 	 * @return grau de parentesco, nulo caso nao exista o dependente
 	 */
 	public String getParentesco(String dependente) {
-		for (int i = 0; i<nomesDependentes.length; i++) {
-			if (nomesDependentes[i].equalsIgnoreCase(dependente))
-				return parentescosDependentes[i];
+		for (int i = 0; i< dependentes.nomesDependentes.length; i++) {
+			if (dependentes.nomesDependentes[i].equalsIgnoreCase(dependente))
+				return dependentes.parentescosDependentes[i];
 		}
 		return null;
 	}
@@ -302,7 +262,7 @@ public class IRPF {
 	* na diferença do total di Rendimento Tributável com o total das Deduções
 	*/
 	public float getBaseCalculoImposto() {
-		float totalTributavel = getTotalRendimentosTributaveis();
+		float totalTributavel = rendimentos.getTotalRendimentosTributaveis();
 		float totalDeducoes = getDeducao() + getTotalPensaoAlimenticia() + getTotalOutrasDeducoes();
 
 		return totalTributavel - totalDeducoes;
@@ -336,7 +296,7 @@ public class IRPF {
     }
 
 	public float getAliquotaEfetiva() {
-		return (calcularImposto() / getTotalRendimentosTributaveis()) * 100;
+		return (calcularImposto() / rendimentos.getTotalRendimentosTributaveis()) * 100;
 	}
 
 }
