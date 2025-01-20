@@ -5,16 +5,6 @@ public class IRPF {
 	public static final boolean TRIBUTAVEL = true;
 	public static final boolean NAOTRIBUTAVEL = false;
 
-	private static final float LIMITE_FAIXA1 = 2112.01f;
-	private static final float LIMITE_FAIXA2 = 2826.65f;
-	private static final float LIMITE_FAIXA3 = 3751.05f;
-	private static final float LIMITE_FAIXA4 = 4664.68f;
-
-	private static final float ALIQUOTA_FAIXA2 = 0.075f;
-	private static final float ALIQUOTA_FAIXA3 = 0.15f;
-	private static final float ALIQUOTA_FAIXA4 = 0.225f;
-	private static final float ALIQUOTA_FAIXA5 = 0.275f;
-
 	private String[] nomeRendimento;
 	private boolean[] rendimentoTributavel;
 	private float[] valorRendimento;
@@ -327,7 +317,7 @@ public class IRPF {
 	 * @param aliquota alíquota da faixa
      * @return valor do imposto calculado
      */
-    private float getImpostoPorFaixa(float baseCalculo, float minimo, float maximo, float aliquota) {
+    public float getImpostoPorFaixa(float baseCalculo, float minimo, float maximo, float aliquota) {
 		if (baseCalculo < minimo) {
 			return 0.0f;
 		}
@@ -342,15 +332,7 @@ public class IRPF {
      * @return valor do imposto calculado
      */
     public float calcularImposto() {
-        float baseCalculo = getBaseCalculoImposto();
-        float imposto = 0.0f;
-
-        imposto += getImpostoPorFaixa(baseCalculo, 0.0f, LIMITE_FAIXA1, 0.0f);
-        imposto += getImpostoPorFaixa(baseCalculo, LIMITE_FAIXA1, LIMITE_FAIXA2, ALIQUOTA_FAIXA2);
-        imposto += getImpostoPorFaixa(baseCalculo, LIMITE_FAIXA2, LIMITE_FAIXA3, ALIQUOTA_FAIXA3);
-        imposto += getImpostoPorFaixa(baseCalculo, LIMITE_FAIXA3, LIMITE_FAIXA4, ALIQUOTA_FAIXA4);
-        imposto += getImpostoPorFaixa(baseCalculo, LIMITE_FAIXA4, Float.MAX_VALUE, ALIQUOTA_FAIXA5);
-        return (float) (Math.floor(imposto * 100.0) / 100.0);
+		return new CalculoImposto(this).computar();
     }
 
 	public float getAliquotaEfetiva() {
