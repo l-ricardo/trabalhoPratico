@@ -1,13 +1,11 @@
 package app;
 
 public class Dependentes {
-    private final app.IRPF IRPF;
-    String[] nomesDependentes;
+    public String[] nomesDependentes;
     String[] parentescosDependentes;
     public int numDependentes;
 
-    public Dependentes(app.IRPF IRPF) {
-        this.IRPF = IRPF;
+    public Dependentes() {
     }
 
     /**
@@ -58,5 +56,9 @@ public class Dependentes {
                 return d;
         }
         return null;
+    }
+
+    public String[] getNomesDependentes() {
+        return nomesDependentes;
     }
 }

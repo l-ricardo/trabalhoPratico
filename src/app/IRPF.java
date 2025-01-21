@@ -16,15 +16,8 @@ public class IRPF {
 	private int numDependentes;
 
 	private final Rendimentos rendimentos = new Rendimentos();
-	private final Dependentes dependentes = new Dependentes(this);
-	
-	private int numContribuicaoPrevidenciaria;
-	private float totalContribuicaoPrevidenciaria;
-	
-	private float totalPensaoAlimenticia;
-	
-	private String[] nomesDeducoes;
-	private float[] valoresDeducoes;
+	private final Dependentes dependentes = new Dependentes();
+	private final Deducoes deducoes = new Deducoes(this);
 
 	public IRPF() {
         rendimentos.nomeRendimento = new String[0];
@@ -34,14 +27,14 @@ public class IRPF {
 		dependentes.nomesDependentes = new String[0];
 		dependentes.parentescosDependentes = new String[0];
 		dependentes.numDependentes = 0;
-		
-		numContribuicaoPrevidenciaria = 0; 
-		totalContribuicaoPrevidenciaria = 0f;
-		
-		totalPensaoAlimenticia = 0f;
-		
-		nomesDeducoes = new String[0];
-		valoresDeducoes = new float[0];
+
+		deducoes.numContribuicaoPrevidenciaria = 0;
+		deducoes.totalContribuicaoPrevidenciaria = 0f;
+
+		deducoes.totalPensaoAlimenticia = 0f;
+
+		deducoes.nomesDeducoes = new String[0];
+		deducoes.valoresDeducoes = new float[0];
 	}
 
 	/**
@@ -108,13 +101,8 @@ public class IRPF {
 	 * @return valor total de deducoes
 	 */
 	public float getDeducao() {
-		float total = 0; 
-		for (String d: dependentes.nomesDependentes) {
-			total += 189.59f;
-		}
-		total += totalContribuicaoPrevidenciaria;
-		
-		return total;
+
+		return deducoes.getDeducao();
 	}
 
 	/**
@@ -122,8 +110,7 @@ public class IRPF {
 	 * @param contribuicao valor da contribuição previdenciária oficial
 	 */
 	public void cadastrarContribuicaoPrevidenciaria(float contribuicao) {
-		numContribuicaoPrevidenciaria++;
-		totalContribuicaoPrevidenciaria += contribuicao;
+		deducoes.cadastrarContribuicaoPrevidenciaria(contribuicao);
 	}
 
 	/**
@@ -132,7 +119,7 @@ public class IRPF {
 	 * @return numero de contribuições realizadas
 	 */
 	public int getNumContribuicoesPrevidenciarias() {
-		return numContribuicaoPrevidenciaria;
+		return deducoes.getNumContribuicoesPrevidenciarias();
 	}
 
 	/**
@@ -140,7 +127,7 @@ public class IRPF {
 	 * @return valor total de contribuições oficiais
 	 */
 	public float getTotalContribuicoesPrevidenciarias() {
-		return totalContribuicaoPrevidenciaria;
+		return deducoes.getTotalContribuicoesPrevidenciarias();
 	}
 
 	/**
@@ -150,6 +137,10 @@ public class IRPF {
 	 */
 	public String getDependente(String nome) {
 		return dependentes.getDependente(nome);
+	}
+
+	public String[] getNomesDependentes() {
+		return dependentes.getNomesDependentes();
 	}
 
 	/**
@@ -173,11 +164,7 @@ public class IRPF {
 	 * @param valor valor da pensao alimenticia
 	 */
 	public void cadastrarPensaoAlimenticia(String dependente, float valor) {
-		String parentesco = getParentesco(dependente); 
-		if (parentesco.toLowerCase().contains("filh") || 
-			parentesco.toLowerCase().contains("alimentand")) {
-			totalPensaoAlimenticia += valor;
-		}
+		deducoes.cadastrarPensaoAlimenticia(dependente, valor);
 	}
 
 	/**
@@ -185,7 +172,7 @@ public class IRPF {
 	 * @return valor total de pensoes alimenticias
 	 */
 	public float getTotalPensaoAlimenticia() {
-		return totalPensaoAlimenticia;
+		return deducoes.getTotalPensaoAlimenticia();
 	}
 
 	/**
@@ -195,26 +182,15 @@ public class IRPF {
 	 * @param valorDeducao valor da deducao
 	 */
 	public void cadastrarDeducaoIntegral(String nome, float valorDeducao) {
-		nomesDeducoes = cadastroNomeDeducao(nome);
-		valoresDeducoes= cadastroValorDeducao(valorDeducao);
+		deducoes.cadastrarDeducaoIntegral(nome, valorDeducao);
 	}
 
 	private String[] cadastroNomeDeducao(String nome) {
-		String[] temp = new String[nomesDeducoes.length + 1];
-		for (int i=0; i<nomesDeducoes.length; i++) {
-			temp[i] = nomesDeducoes[i];
-		}
-		temp[nomesDeducoes.length] = nome;
-		return temp;
+		return deducoes.cadastroNomeDeducao(nome);
 	}
 
 	private float[] cadastroValorDeducao(float valorDeducao) {
-		float[] temp = new float[valoresDeducoes.length + 1];
-		for (int i=0; i<valoresDeducoes.length; i++) {
-			temp[i] = valoresDeducoes[i];
-		}
-		temp[valoresDeducoes.length] = valorDeducao;
-		return temp;
+		return deducoes.cadastroValorDeducao(valorDeducao);
 	}
 
 	/**
@@ -223,11 +199,7 @@ public class IRPF {
 	 * @return nome da deducao, ou null caso na esteja cadastrada
 	 */
 	public String getOutrasDeducoes(String nome) {
-		for (String d : nomesDeducoes) {
-			if (d.toLowerCase().contains(nome.toLowerCase()))
-				return d;
-		}
-		return null;
+		return deducoes.getOutrasDeducoes(nome);
 	}
 
 	/**
@@ -236,11 +208,7 @@ public class IRPF {
 	 * @return valor da deducao
 	 */
 	public float getDeducao(String nome) {
-		for (int i=0; i<nomesDeducoes.length; i++) {
-			if (nomesDeducoes[i].toLowerCase().contains(nome.toLowerCase()))
-				return valoresDeducoes[i];
-		}
-		return 0;
+		return deducoes.getDeducao(nome);
 	}
 
 	/**
@@ -249,11 +217,7 @@ public class IRPF {
 	 * @return valor total das outras deducoes
 	 */
 	public float getTotalOutrasDeducoes() {
-		float soma = 0;
-		for (float f : valoresDeducoes) {
-			soma += f;
-		}
-		return soma;
+		return deducoes.getTotalOutrasDeducoes();
 	}
 
 	/**
@@ -263,7 +227,7 @@ public class IRPF {
 	*/
 	public float getBaseCalculoImposto() {
 		float totalTributavel = rendimentos.getTotalRendimentosTributaveis();
-		float totalDeducoes = getDeducao() + getTotalPensaoAlimenticia() + getTotalOutrasDeducoes();
+		float totalDeducoes = deducoes.getDeducao() + deducoes.getTotalPensaoAlimenticia() + deducoes.getTotalOutrasDeducoes();
 
 		return totalTributavel - totalDeducoes;
 	}
